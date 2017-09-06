@@ -5,18 +5,13 @@ import org.mongodb.morphia.annotations.*;
 
 @Entity(value = "video", noClassnameStored = true)
 @Indexes({
-    @Index(fields = {@Field(value = "viewkey")}, options = @IndexOptions(unique = true))
+    @Index(fields = {@Field(value = "viewkey")})
 })
 public class Video {
     /**
-     * ID
-     */
-    @Id
-    private ObjectId id;
-
-    /**
      * 视频ID
      */
+    @Id
     private String viewkey;
     /**
      * 标题
@@ -56,14 +51,6 @@ public class Video {
      */
     @Property("update_time")
     private Integer updateTime;
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
 
     public String getViewkey() {
         return viewkey;
