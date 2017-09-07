@@ -59,11 +59,11 @@ public class HttpUtil {
         return client.newCall(request).execute();
     }
 
-    public static void download(String url, String filename) throws IOException {
+    public static long download(String url, String filename) throws IOException {
         try (InputStream input = new URL(url).openStream()) {
             try (ReadableByteChannel channel = Channels.newChannel(input)) {
                 try (FileOutputStream output = new FileOutputStream(filename)) {
-                    output.getChannel().transferFrom(channel, 0, Long.MAX_VALUE);
+                    return output.getChannel().transferFrom(channel, 0, Long.MAX_VALUE);
                 }
             }
         }

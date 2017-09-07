@@ -11,7 +11,9 @@ import me.gzj.utils.http.HttpUtil;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -276,5 +278,66 @@ public class SpiderServiceImpl implements ISpiderService {
         logger.info(String.format("total get %d page, %d video", page, saveCount));
 
         return ServiceResult.createSuccessResult(saveCount);
+    }
+
+    /**
+     * 下载视频
+     * @return
+     */
+    public ServiceResult<Integer> downloadVideo() {
+        try {
+            int downloadCount = 0;
+            List<Video> videoList = videoDao.getNotDownloadMaxViewVideoList(pageSize);
+            if (CollectionUtils.isNotEmpty(videoList)) {
+                for (Video video : videoList) {
+                    ServiceResult<VideoInfo> videoInfoResult = getVideoInfo(video.getViewkey());
+                    if (videoInfoResult.isSuccess()) {
+                        VideoInfo videoInfo = videoInfoResult.getData();
+
+                        // 更新视频信息
+                        Video newVideo = new Video();
+                        PropertyUtils.copyProperties(newVideo, videoInfo);
+                        if (StringUtils.equals(video.getViewkey(), newVideo.getViewkey())) {
+                            videoDao.saveVideo(newVideo);
+                        }
+
+                        // 下载视频
+                        if (StringUtils.isNotEmpty(videoInfo.getDownloadUrl())) {
+                            String filename = String.format("%s_%s_%s.mp4",
+                                    DateFormatUtils.format(videoInfo.getAddDate(), "yyyyMMdd"),
+                                    video.getViewkey(),
+                                    videoInfo.getName());
+                            long byteCount = HttpUtil.download(videoInfo.getDownloadUrl(), String.format("%s%s", ConfigUtil.DownloadPath(), filename));
+
+                            // 大于100KB的才是正常视频
+                            if (byteCount >= 100 * 1024) {
+                                downloadCount++;
+
+                                Video updateVideo = new Video();
+                                updateVideo.setViewkey(video.getViewkey());
+                                int downloads = video.getDownloads() == null ? 1 : video.getDownloads() + 1;
+                                updateVideo.setDownloads(downloads);
+                                videoDao.saveVideo(updateVideo);
+                            }
+
+                            logger.info(String.format("download %s length %d", filename, byteCount));
+                        }
+                    } else if (videoInfoResult.getCode() == -1000) {
+                        // 视频不存在
+                        Video updateVideo = new Video();
+                        updateVideo.setViewkey(video.getViewkey());
+                        updateVideo.setMiss(true);
+                        videoDao.saveVideo(updateVideo);
+                        logger.info(String.format("video %s miss", video.getViewkey()));
+                    }
+                }
+            }
+
+            logger.info(String.format("download %d video", downloadCount));
+            return ServiceResult.createSuccessResult(downloadCount);
+        } catch (Exception ex) {
+            logger.error("downlaod video error", ex);
+        }
+        return ServiceResult.createFailResult();
     }
 }

@@ -5,12 +5,11 @@ import me.gzj.entity.dao.Video;
 import me.gzj.utils.MorphiaUtil;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.mapping.Mapper;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
-import org.mongodb.morphia.query.UpdateResults;
+import org.mongodb.morphia.query.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public class VideoDaoImpl implements IVideoDao {
@@ -63,5 +62,21 @@ public class VideoDaoImpl implements IVideoDao {
         update.set("update_time", new Date());
         UpdateResults result = datastore.update(query, update, true);
         return result.getUpdatedExisting() ? result.getUpdatedCount() : result.getInsertedCount();
+    }
+
+    /**
+     * 获取未下载、观看次数最多的视频信息列表
+     * @param limit
+     * @return
+     */
+    public List<Video> getNotDownloadMaxViewVideoList(int limit) {
+        Query<Video> query = datastore.createQuery(Video.class);
+        query.field("miss").notEqual(true);
+        query.or(
+                query.criteria("downloads").doesNotExist(),
+                query.criteria("downloads").equal(0)
+        );
+        query.order(Sort.descending("views"));
+        return query.asList(new FindOptions().limit(limit));
     }
 }

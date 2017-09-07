@@ -54,4 +54,8 @@ public class ConfigUtil {
         return CONFIG.getString("SiteVideoListPath");
     }
     //endregion
+
+    public static String DownloadPath() {
+        return CONFIG.getString("DownloadPath");
+    }
 }

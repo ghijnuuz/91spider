@@ -22,6 +22,7 @@ public class App {
                     spiderService.getAllVideoAndSaveToDatabase();
                     break;
                 case "download":
+                    spiderService.downloadVideo();
                     break;
                 default:
                     System.out.println("command error");

@@ -26,4 +26,10 @@ public interface ISpiderService {
      * @return
      */
     ServiceResult<Integer> getAllVideoAndSaveToDatabase();
+
+    /**
+     * 下载视频
+     * @return
+     */
+    ServiceResult<Integer> downloadVideo();
 }
