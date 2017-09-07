@@ -235,6 +235,7 @@ public class SpiderServiceImpl implements ISpiderService {
      * @return
      */
     public ServiceResult<Integer> getAllVideoAndSaveToDatabase() {
+        logger.info("start get all video info");
         int page = 1;
         boolean hasNextPage = true;
         int saveCount = 0;
@@ -285,11 +286,13 @@ public class SpiderServiceImpl implements ISpiderService {
      * @return
      */
     public ServiceResult<Integer> downloadVideo() {
+        logger.info("start download video");
         try {
             int downloadCount = 0;
             List<Video> videoList = videoDao.getNotDownloadMaxViewVideoList(pageSize);
             if (CollectionUtils.isNotEmpty(videoList)) {
                 for (Video video : videoList) {
+                    logger.info(String.format("start download video %s", video.getViewkey()));
                     ServiceResult<VideoInfo> videoInfoResult = getVideoInfo(video.getViewkey());
                     if (videoInfoResult.isSuccess()) {
                         VideoInfo videoInfo = videoInfoResult.getData();
