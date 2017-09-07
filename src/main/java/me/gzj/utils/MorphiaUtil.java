@@ -17,7 +17,7 @@ public class MorphiaUtil {
 
         // tell Morphia where to find your classes
         // can be called multiple times with different packages or classes
-        morphia.mapPackage("me.gzj.entity");
+        morphia.mapPackage("me.gzj.entity.dao");
 
         // create the Datastore connecting
         MongoClient mongoClient = new MongoClient(new MongoClientURI(ConfigUtil.MongoUri()));

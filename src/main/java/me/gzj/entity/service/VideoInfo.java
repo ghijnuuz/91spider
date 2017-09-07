@@ -1,22 +1,16 @@
-package me.gzj.entity;
+package me.gzj.entity.service;
 
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
+import java.util.Date;
 
-@Entity(value = "video", noClassnameStored = true)
-@Indexes({
-    @Index(fields = {@Field(value = "viewkey")})
-})
-public class Video {
+public class VideoInfo {
     /**
      * 视频ID
      */
-    @Id
     private String viewkey;
     /**
-     * 标题
+     * 视频名称
      */
-    private String title;
+    private String name;
     /**
      * 时长
      */
@@ -37,20 +31,14 @@ public class Video {
      * 积分
      */
     private Integer point;
-
     /**
-     * 下载次数
+     * 添加日期
      */
-    private Integer downloads;
+    private Date addDate;
     /**
-     * 视频是否消失
+     * 下载地址
      */
-    private Boolean miss;
-    /**
-     * 更新时间（秒）
-     */
-    @Property("update_time")
-    private Integer updateTime;
+    private String downloadUrl;
 
     public String getViewkey() {
         return viewkey;
@@ -60,12 +48,12 @@ public class Video {
         this.viewkey = viewkey;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getRuntime() {
@@ -108,27 +96,19 @@ public class Video {
         this.point = point;
     }
 
-    public Integer getDownloads() {
-        return downloads;
+    public Date getAddDate() {
+        return addDate;
     }
 
-    public void setDownloads(Integer downloads) {
-        this.downloads = downloads;
+    public void setAddDate(Date addDate) {
+        this.addDate = addDate;
     }
 
-    public Boolean getMiss() {
-        return miss;
+    public String getDownloadUrl() {
+        return downloadUrl;
     }
 
-    public void setMiss(Boolean miss) {
-        this.miss = miss;
-    }
-
-    public Integer getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Integer updateTime) {
-        this.updateTime = updateTime;
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
     }
 }

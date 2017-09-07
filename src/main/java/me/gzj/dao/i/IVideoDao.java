@@ -1,6 +1,6 @@
 package me.gzj.dao.i;
 
-import me.gzj.entity.Video;
+import me.gzj.entity.dao.Video;
 
 public interface IVideoDao {
     /**

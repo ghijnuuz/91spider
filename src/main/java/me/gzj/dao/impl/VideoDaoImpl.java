@@ -1,7 +1,7 @@
 package me.gzj.dao.impl;
 
 import me.gzj.dao.i.IVideoDao;
-import me.gzj.entity.Video;
+import me.gzj.entity.dao.Video;
 import me.gzj.utils.MorphiaUtil;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.mapping.Mapper;
@@ -9,6 +9,8 @@ import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 import org.mongodb.morphia.query.UpdateResults;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
 
 @Repository
 public class VideoDaoImpl implements IVideoDao {
@@ -31,8 +33,8 @@ public class VideoDaoImpl implements IVideoDao {
     public int saveVideo(Video video) {
         Query<Video> query = datastore.createQuery(Video.class).field(Mapper.ID_KEY).equal(video.getViewkey());
         UpdateOperations<Video> update = datastore.createUpdateOperations(Video.class);
-        if (video.getTitle() != null) {
-            update.set("title", video.getTitle());
+        if (video.getName() != null) {
+            update.set("name", video.getName());
         }
         if (video.getRuntime() != null) {
             update.set("runtime", video.getRuntime());
@@ -49,13 +51,16 @@ public class VideoDaoImpl implements IVideoDao {
         if (video.getPoint() != null) {
             update.set("point", video.getPoint());
         }
+        if (video.getAddDate() != null) {
+            update.set("add_date", video.getAddDate());
+        }
         if (video.getDownloads() != null) {
             update.set("downloads", video.getDownloads());
         }
         if (video.getMiss() != null) {
             update.set("miss", video.getMiss());
         }
-        update.set("update_time", (int) (System.currentTimeMillis() / 1000));
+        update.set("update_time", new Date());
         UpdateResults result = datastore.update(query, update, true);
         return result.getUpdatedExisting() ? result.getUpdatedCount() : result.getInsertedCount();
     }

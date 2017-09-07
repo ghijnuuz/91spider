@@ -2,7 +2,7 @@ package me.gzj.dao;
 
 import me.gzj.configuration.AppConfiguration;
 import me.gzj.dao.i.IVideoDao;
-import me.gzj.entity.Video;
+import me.gzj.entity.dao.Video;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class VideoDaoTest {
     public void t1_saveVideo() {
         Video video = new Video();
         video.setViewkey("viewkey1");
-        video.setTitle("title1");
+        video.setName("name1");
         int result = videoDao.saveVideo(video);
         Assert.assertEquals(1, result);
     }
@@ -32,6 +32,6 @@ public class VideoDaoTest {
     public void t2_getVideo() {
         Video video = videoDao.getVideo("viewkey1");
         Assert.assertNotNull(video);
-        Assert.assertEquals("title1", video.getTitle());
+        Assert.assertEquals("name1", video.getName());
     }
 }

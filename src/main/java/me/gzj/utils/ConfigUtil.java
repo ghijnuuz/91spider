@@ -40,4 +40,18 @@ public class ConfigUtil {
         return CONFIG.getString("MongoDatabaseName");
     }
     //endregion
+
+    //region Site
+    public static String SiteHost() {
+        return CONFIG.getString("SiteHost");
+    }
+
+    public static String SiteVideoPath() {
+        return CONFIG.getString("SiteVideoPath");
+    }
+
+    public static String SiteVideoListPath() {
+        return CONFIG.getString("SiteVideoListPath");
+    }
+    //endregion
 }
