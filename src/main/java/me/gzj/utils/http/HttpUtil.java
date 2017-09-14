@@ -60,12 +60,18 @@ public class HttpUtil {
     }
 
     public static long download(String url, String filename) throws IOException {
-        try (InputStream input = new URL(url).openStream()) {
-            try (ReadableByteChannel channel = Channels.newChannel(input)) {
-                try (FileOutputStream output = new FileOutputStream(filename)) {
-                    return output.getChannel().transferFrom(channel, 0, Long.MAX_VALUE);
+        long byteCount = 0;
+        try (Response response = get(url)) {
+            if (response.isSuccessful()) {
+                try (InputStream input = response.body().byteStream()) {
+                    try (ReadableByteChannel channel = Channels.newChannel(input)) {
+                        try (FileOutputStream output = new FileOutputStream(filename)) {
+                            byteCount = output.getChannel().transferFrom(channel, 0, Long.MAX_VALUE);
+                        }
+                    }
                 }
             }
         }
+        return byteCount;
     }
 }
